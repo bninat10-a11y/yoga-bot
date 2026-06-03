@@ -12,6 +12,16 @@ const PAY_TEXT = `Для подтверждения места переведи�
 const https = require('https');
 const states = {};
 
+const { google } = require('googleapis');
+
+function getAuth() {
+  const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+  return new google.auth.GoogleAuth({
+    credentials,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets']
+  });
+}
+
 function telegram(method, payload) {
   return new Promise((resolve, reject) => {
     const data = JSON.stringify(payload);
@@ -44,12 +54,8 @@ function sendPhoto(chatId, photo, caption, keyboard) {
   return telegram('sendPhoto', payload);
 }
 
-const { google } = require('googleapis');
-
 async function addApplication(data) {
-  const auth = new google.auth.GoogleAuth({
-    scopes: ['https://www.googleapis.com/auth/spreadsheets']
-  });
+  const auth = getAuth();
   const sheets = google.sheets({ version: 'v4', auth });
   const res = await sheets.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
@@ -62,9 +68,7 @@ async function addApplication(data) {
 }
 
 async function updateStatus(row, status) {
-  const auth = new google.auth.GoogleAuth({
-    scopes: ['https://www.googleapis.com/auth/spreadsheets']
-  });
+  const auth = getAuth();
   const sheets = google.sheets({ version: 'v4', auth });
   await sheets.spreadsheets.values.update({
     spreadsheetId: SPREADSHEET_ID,
@@ -75,9 +79,7 @@ async function updateStatus(row, status) {
 }
 
 async function getClientId(row) {
-  const auth = new google.auth.GoogleAuth({
-    scopes: ['https://www.googleapis.com/auth/spreadsheets']
-  });
+  const auth = getAuth();
   const sheets = google.sheets({ version: 'v4', auth });
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
