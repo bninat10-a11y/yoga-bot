@@ -59,7 +59,7 @@ async function addApplication(data) {
   const sheets = google.sheets({ version: 'v4', auth });
   const res = await sheets.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
-    range: 'Sheet1',
+    range: 'Лист1',
     valueInputOption: 'RAW',
     requestBody: { values: [[new Date().toISOString(), data.userId, data.username, data.name, data.phone, data.option, data.amount, data.status, data.receipt]] }
   });
@@ -72,7 +72,7 @@ async function updateStatus(row, status) {
   const sheets = google.sheets({ version: 'v4', auth });
   await sheets.spreadsheets.values.update({
     spreadsheetId: SPREADSHEET_ID,
-    range: `Sheet1!H${row}`,
+    range: `Лист1!H${row}`,
     valueInputOption: 'RAW',
     requestBody: { values: [[status]] }
   });
@@ -83,7 +83,7 @@ async function getClientId(row) {
   const sheets = google.sheets({ version: 'v4', auth });
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `Sheet1!B${row}`
+    range: `Лист1!B${row}`
   });
   return res.data.values[0][0];
 }
